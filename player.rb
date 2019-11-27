@@ -39,6 +39,8 @@ class Player
     bank_amount.zero?
   end
 
+  def game_status(_action, _data); end
+
   def continue?
     !bank_zero?
   end

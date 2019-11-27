@@ -9,6 +9,10 @@ class Deck
     @deck = generate
   end
 
+  def take_card
+    deck.pop
+  end
+
   private
 
   attr_reader :deck
