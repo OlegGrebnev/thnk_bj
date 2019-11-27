@@ -5,7 +5,7 @@ class ConsoleUser < Player
     puts 'one of the players bank amount is zero!'
   end,
                     game_start: ->(_data) { puts 'game start' },
-                    take_card: ->(data) { puts "#{data[:name]} take card}" },
+                    take_card: ->(data) { puts "#{data[:name]} take card" },
                     rate: ->(data) { puts "#{data[:name]} rate #{data[:bank_amount]}" },
                     pass: ->(data) { puts "#{data[:name]} pass" },
                     show_hand: lambda do |data|
@@ -46,9 +46,10 @@ class ConsoleUser < Player
   end
 
   def continue?
-    print 'print any button for new game or q for exit'
+    print 'print any button for new game or q for exit... '
     choice = gets.chomp
-    puts choice != 'q' && super
+    puts
+    choice != 'q' && super
   end
 
   def game_status(action, data)

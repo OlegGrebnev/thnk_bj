@@ -16,6 +16,7 @@ class Game
     deal_cards
     rates
     game_loop
+    pay_winners
   end
 
   protected
@@ -51,7 +52,7 @@ class Game
   end
 
   def deal_cards
-    players.each { |player| 2.times { get_card(player) } }
+    players.each { |player| 2.times { take_card(player) } }
   end
 
   def game_loop
