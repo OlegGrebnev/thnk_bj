@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class Game
-  def initialize(player)
-    @players = [player, Dealer.new]
+  attr_reader :interface, :players
+
+  def initialize(interface)
+    @interface = interface
+    @players = [interface.init_player, interface.init_dealer]
     @deck = Deck.new
   end
 
@@ -22,7 +25,7 @@ class Game
   protected
 
   attr_accessor :bank, :game_status
-  attr_reader :players, :deck
+  attr_reader :deck
 
   private
 
@@ -39,7 +42,7 @@ class Game
   end
 
   def game_start
-    self.game_status = :start
+    self.game_status = :game_start
     log(:game_start, {})
   end
 
@@ -58,7 +61,12 @@ class Game
   def game_loop
     loop do
       players.each do |player|
-        action = player.turn
+        interface.render_info(player)
+        action = if player.class != Dealer
+                   interface.choice_option
+                 else
+                   player.turn
+                 end
         send action, player
         break if game_end?
       end
@@ -68,12 +76,14 @@ class Game
 
   def pass(player)
     log(:pass, name: player.name)
+
   end
 
   def card_score(card, player)
     if card.type == 'A'
       return player.score <= 10 ? card.value.max : card.value.min
     end
+
     card.value
   end
 
@@ -129,10 +139,10 @@ class Game
   end
 
   def new_game?
-    players.all?(&:continue?)
+    interface.continue?(players)
   end
 
   def log(action, **data)
-    players.each { |player| player.game_status(action, data) }
+    interface.game_status(action, data)
   end
 end

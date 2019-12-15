@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ConsoleUser < Player
+class ConsoleInterface < Interface
   GAME_STATUSES = { player_bank_zero: lambda do |_data|
     puts 'one of the players bank amount is zero!'
   end,
@@ -13,43 +13,36 @@ class ConsoleUser < Player
                        puts "#{player} has cards #{info[:cards]}, with score #{info[:score]}"
                      end
                    end,
-                    winner: ->(data) { puts "#{data[:name]} winner, take money #{data[:bank_amount]}" } }.freeze
+                    winner: ->(data) { puts "#{data[:name]} winner, take money #{data[:bank_amount]}" }
+  }.freeze
 
-  def initialize
-    print 'enter your name: '
-    name = gets.chomp
+  def init_player
+    print 'enter your name...'
+    player = Player.new(gets.chomp)
     puts
-    super(name)
+    player
   end
 
-  def options
-    { pass: '1 - pass',
-      take_card: '2 - take card',
-      show_hand: '3 - show hand' }
+  def init_dealer
+    Dealer.new
   end
 
-  def render_info
-    puts "bank amount: #{bank_amount} money, cards: #{show_cards}, score: #{score}"
-  end
-
-  def turn
-    render_info
-    choiced = choice
-    puts
-    options.keys[choiced - 1]
-  end
-
-  def choice
-    puts options.values
+  def choice_option
+    puts OPTIONS.values
     print 'select options...'
-    gets.chomp.to_i
+    choice = gets.chomp.to_i
+    OPTIONS.keys[choice - 1]
   end
 
-  def continue?
+  def continue?(players)
     print 'print any button for new game or q for exit... '
     choice = gets.chomp
     puts
-    choice != 'q' && super
+    choice != 'q' && players.none?(&:bank_zero?)
+  end
+
+  def render_info(player)
+    puts "#{player.name} bank: #{player.bank_amount}, cards: #{player.show_cards}, score: #{player.score}"
   end
 
   def game_status(action, data)
