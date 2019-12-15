@@ -5,7 +5,7 @@ class Game
 
   def initialize(interface)
     @interface = interface
-    @players = [interface.init_player, interface.init_dealer]
+    @players = [interface.init_player, Dealer.new]
     @deck = Deck.new
   end
 

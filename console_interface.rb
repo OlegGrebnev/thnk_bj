@@ -23,10 +23,6 @@ class ConsoleInterface < Interface
     player
   end
 
-  def init_dealer
-    Dealer.new
-  end
-
   def choice_option
     puts OPTIONS.values
     print 'select options...'
